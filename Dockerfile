@@ -47,4 +47,12 @@ ENV HEIGHT=720
 
 COPY startapp.sh /startapp.sh
 
+## I'm not sure if these are actually needed, but they suppress some Java exceptions
+#RUN apt-get update \
+#  && apt-get install -y libxslt1-dev libgl1-mesa-dev \
+#  && apt-get clean
+#
+## Suppress some errors in the log
+#RUN mkdir -p /var/lib/tomcat7/logs
+
 VOLUME ["/input", "/output"]
