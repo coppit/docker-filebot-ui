@@ -45,6 +45,8 @@ RUN sed -i 's/java /java -Dsun.java2d.xrender=false /' /usr/bin/filebot
 ENV WIDTH=1280
 ENV HEIGHT=720
 
+EXPOSE 3389
+
 COPY startapp.sh /startapp.sh
 
 VOLUME ["/input", "/output"]
