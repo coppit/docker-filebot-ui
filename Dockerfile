@@ -1,4 +1,4 @@
-FROM hurricane/dockergui:x11rdp1.2
+FROM hurricane/dockergui:x11rdp1.3
 #FROM hurricane/dockergui:x11rdp
 #FROM hurricane/dockergui:xvnc
 
