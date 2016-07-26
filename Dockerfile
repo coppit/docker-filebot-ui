@@ -32,9 +32,9 @@ RUN add-apt-repository ppa:webupd8team/java \
   && apt-get clean
 
 # To find the latest version: https://www.filebot.net/download.php?mode=s&type=deb&arch=amd64
-# We'll use a specific version for reproducible builds 
+# We'll use a specific version for reproducible builds
 RUN set -x \
-  && wget -N 'http://downloads.sourceforge.net/project/filebot/filebot/FileBot_4.6/filebot_4.6_amd64.deb' -O /root/filebot.deb \
+  && wget -N 'http://downloads.sourceforge.net/project/filebot/filebot/FileBot_4.7/filebot_4.7_amd64.deb' -O /root/filebot.deb \
   && dpkg -i /root/filebot.deb && rm /root/filebot.deb \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
