@@ -11,7 +11,7 @@ This docker image is available as a [trusted build on the docker index](https://
 
 Run:
 
-`sudo docker run --name=FileBot-UI -d -p 3389:3389 -v /input/dir/path:/input -v /output/dir/path:/output:rw coppit/filebot-ui`
+`sudo docker run --name=FileBot-UI -d -p 3389:3389 -v /input/dir/path:/input -v /output/dir/path:/output:rw -v /config/dir/path:/config:rw coppit/filebot-ui`
 
 Then connect a remote desktop client to your server. If you have changed the host port, then specify the server as `<host
 ip>:<host port>`. There are RDP clients for multiple platforms:
