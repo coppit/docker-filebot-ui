@@ -57,4 +57,7 @@ COPY startapp.sh /startapp.sh
 ## Suppress some errors in the log
 #RUN mkdir -p /var/lib/tomcat7/logs
 
-VOLUME ["/input", "/output"]
+RUN mkdir -p /nobody/.java/.userPrefs/net/filebot
+RUN ln -s /nobody/.java/.userPrefs/net/filebot /config
+
+VOLUME ["/input", "/output", "/config"]
