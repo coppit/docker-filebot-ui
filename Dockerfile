@@ -34,7 +34,7 @@ RUN add-apt-repository ppa:webupd8team/java \
 # To find the latest version: https://www.filebot.net/download.php?mode=s&type=deb&arch=amd64
 # We'll use a specific version for reproducible builds
 RUN set -x \
-  && wget -N 'http://downloads.sourceforge.net/project/filebot/filebot/FileBot_4.7/filebot_4.7_amd64.deb' -O /root/filebot.deb \
+  && wget -N 'http://downloads.sourceforge.net/project/filebot/filebot/FileBot_4.7.5/filebot_4.7.5_amd64.deb' -O /root/filebot.deb \
   && dpkg -i /root/filebot.deb && rm /root/filebot.deb \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -42,8 +42,8 @@ RUN set -x \
 RUN sed -i 's/java /java -Dsun.java2d.xrender=false /' /usr/bin/filebot
 
 # Default resolution
-ENV WIDTH=1280
-ENV HEIGHT=720
+ENV WIDTH=1440
+ENV HEIGHT=900
 
 EXPOSE 3389
 
