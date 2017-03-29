@@ -35,7 +35,6 @@ RUN add-apt-repository ppa:webupd8team/java \
 # We'll use a specific version for reproducible builds
 RUN set -x \
   && wget -N 'https://sourceforge.net/projects/filebot/files/filebot/FileBot_4.7.8/filebot_4.7.8_amd64.deb' -O /root/filebot.deb \
-#  && wget -N 'http://downloads.sourceforge.net/project/filebot/filebot/FileBot_4.7.5/filebot_4.7.5_amd64.deb' -O /root/filebot.deb \
   && dpkg -i /root/filebot.deb && rm /root/filebot.deb \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
