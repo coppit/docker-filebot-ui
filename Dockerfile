@@ -1,51 +1,55 @@
-FROM hurricane/dockergui:x11rdp1.3
+FROM hurricane/dockergui:x11rdp
 #FROM hurricane/dockergui:x11rdp
 #FROM hurricane/dockergui:xvnc
 
 MAINTAINER David Coppit <david@coppit.org>
 
+ENV APP_NAME="Filebot" WIDTH=1280 HEIGHT=720 TERM=xterm
+
 # User/Group Id gui app will be executed as
 ENV USER_ID=99
 ENV GROUP_ID=100
-
-ENV APP_NAME="Filebot"
 
 # Use baseimage-docker's init system
 CMD ["/sbin/my_init"]
 
 ENV DEBIAN_FRONTEND noninteractive
 
-# Speed up APT
-RUN echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup \
-  && echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache
+RUN \
 
-# Remove built-in Java 7
-RUN apt-get purge -y openjdk-\* icedtea\*
+# Speed up APT
+echo "force-unsafe-io" > /etc/dpkg/dpkg.cfg.d/02apt-speedup && \
+echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache && \
 
 # Auto-accept Oracle JDK license
-RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections && \
 
 # Filebot needs Java 8
-RUN add-apt-repository ppa:webupd8team/java \
-  && apt-get update \
-  && apt-get install -y oracle-java8-installer \
-  && apt-get clean
+add-apt-repository ppa:webupd8team/java && \
+apt-get update && \
+# Install a specific version for reproducible builds
+apt-get install -qy 'oracle-java8-installer=8u121-1~webupd8~2' && \
+
+# clean up
+apt-get clean && \
+rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+/usr/share/man /usr/share/groff /usr/share/info \
+/usr/share/lintian /usr/share/linda /var/cache/man && \
+(( find /usr/share/doc -depth -type f ! -name copyright|xargs rm || true )) && \
+(( find /usr/share/doc -empty|xargs rmdir || true ))
+
+RUN \
 
 # To find the latest version: https://www.filebot.net/download.php?mode=s&type=deb&arch=amd64
 # We'll use a specific version for reproducible builds
-RUN set -x \
-  && wget -N 'https://sourceforge.net/projects/filebot/files/filebot/FileBot_4.7.8/filebot_4.7.8_amd64.deb' -O /root/filebot.deb \
-  && dpkg -i /root/filebot.deb && rm /root/filebot.deb \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+wget -N 'https://sourceforge.net/projects/filebot/files/filebot/FileBot_4.7.9/filebot_4.7.9_amd64.deb' -O /root/filebot.deb && \
+dpkg -i /root/filebot.deb && rm /root/filebot.deb && \
+
+mkdir -p /nobody/.java/.userPrefs/net/filebot && \
+ln -s /nobody/.java/.userPrefs/net/filebot /config && \
 
 # Otherwise RDP rendering of the UI doesn't work right.
-RUN sed -i 's/java /java -Dsun.java2d.xrender=false /' /usr/bin/filebot
-
-# Default resolution
-ENV WIDTH=1440
-ENV HEIGHT=900
-
-EXPOSE 3389
+sed -i 's/java /java -Dsun.java2d.xrender=false /' /usr/bin/filebot
 
 COPY startapp.sh /startapp.sh
 
@@ -57,7 +61,12 @@ COPY startapp.sh /startapp.sh
 ## Suppress some errors in the log
 #RUN mkdir -p /var/lib/tomcat7/logs
 
-RUN mkdir -p /nobody/.java/.userPrefs/net/filebot
-RUN ln -s /nobody/.java/.userPrefs/net/filebot /config
+# Set the locale, to support files that have non-ASCII characters
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 VOLUME ["/input", "/output", "/config"]
+
+EXPOSE 3389 8080
