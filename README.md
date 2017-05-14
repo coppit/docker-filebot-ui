@@ -1,3 +1,6 @@
+**This container is now deprecated. Its functionality has been merged into coppit/filebot. Please use that one. This
+container will be deleted soon.**
+
 docker-filebot-ui
 =================
 
